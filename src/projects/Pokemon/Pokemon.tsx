@@ -15,11 +15,15 @@ export default function Pokemon() {
   const [isFetching, setIsFetching] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const hasUserScrolledRef = useRef(false);
+  const fetchingRef = useRef(false);
 
   const [offset, setOffset] = useState(0);
 
 
   async function fetchPokemons({ currentOffSet }: { currentOffSet: number }) {
+    if (fetchingRef.current) return;
+    fetchingRef.current = true;
+
     try {
       setIsFetching(true);
 
@@ -47,6 +51,7 @@ export default function Pokemon() {
       console.error("Error fetching pokemons:", error);
     } finally {
       setIsFetching(false);
+      fetchingRef.current = false;
     }
   }
 
@@ -65,13 +70,12 @@ export default function Pokemon() {
         const entry = entries[0];
 
         if (!entry.isIntersecting) return;
-
-        // ✅ don't trigger on first load
         if (!hasUserScrolledRef.current) return;
+        if (fetchingRef.current) return;
 
         setOffset((prevOffset) => prevOffset + LIMIT);
       },
-      { threshold: 0.1, rootMargin: '500px' }
+      { threshold: 0.1, rootMargin: '300px' }
     );
 
     const el = bottomRef.current;
@@ -81,6 +85,9 @@ export default function Pokemon() {
   }, []);
 
   useEffect(() => {
+
+    if (fetchingRef.current) return;
+
     fetchPokemons({ currentOffSet: 0 });
   }, []);
 
