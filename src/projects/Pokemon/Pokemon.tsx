@@ -97,16 +97,18 @@ export default function Pokemon() {
   }, [offset]);
 
   return (
-    <div>
+    <div className="w-full h-screen overflow-y-auto bg-white p-6">
       <header>
-        <h1>Pokedex</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">Pokedex</h1>
       </header>
-      {pokemons.map((pokemon) => (
-        <div key={pokemon.id} style={{ marginBottom: 16, border: "1px solid #ccc", borderRadius: 8, padding: 16 }}>
-          <img src={pokemon.picture} alt={pokemon.name} style={{ display: 'block', width: '100px', height: '100px' }} />
-          <p style={{ fontSize: "18px", marginTop: 8 }}>{pokemon.name}</p>
-        </div>
-      ))}
+      <div className="grid grid-cols-1 gap-4">
+        {pokemons.map((pokemon) => (
+          <div key={pokemon.id} className="border border-gray-300 rounded-lg flex justify-center gap-2 items-center">
+            <img src={pokemon.picture} alt={pokemon.name} className="w-20 h-20 object-contain" />
+            <p className="text-md font-semibold">{pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</p>
+          </div>
+        ))}
+      </div>
 
       <footer ref={bottomRef} style={{ height: 1 }}></footer>
     </div>
